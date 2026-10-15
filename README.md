@@ -28,151 +28,26 @@ The analysis addresses five key questions:
 ### 1. Highest-Paying Data Analyst Jobs
 Identified highly paid Data Analyst positions using salary filters and descending salary rankings to examine the opportunities available in the dataset.
 
-SELECT job_id,
-       job_title_short,
-       job_location,
-       job_schedule_type,
-       salary_year_avg,
-       job_posted_date,
-       name AS company_name
-FROM 
-      job_postings_fact
-
-LEFT JOIN company_dim ON job_postings_fact.company_id=company_dim.company_id
-WHERE 
-      salary_year_avg IS NOT NULL AND job_title_short='Data Analyst' AND job_location='Anywhere'
-ORDER BY salary_year_avg DESC;
-
 <img width="968" height="506" alt="image" src="https://github.com/user-attachments/assets/cb61620b-66b5-4e71-ac83-ec540f432449" />
-
 
 
 ### 2. Skills Required for High-Paying Roles
 Combined job posting and skills data to identify the technical skills associated with the highest-paying positions.
-
-WITH top_paying_jobs AS (SELECT
-
-job_id,
-job_title_short,
-job_location,
-salary_year_avg,
-job_schedule_type,
-
-name
-
-FROM job_postings_fact
-
-LEFT JOIN company_dim
-ON job_postings_fact.company_id=company_dim.company_id
-
-WHERE
-job_title_short='Data Analyst'
-AND salary_year_avg IS NOT NULL
-AND job_location='Anywhere'
-
-ORDER BY salary_year_avg DESC
-
-)
-
-SELECT 
-top_paying_jobs.*,
-skills
-FROM top_paying_jobs
-
-LEFT JOIN skills_job_dim ON top_paying_jobs.job_id=skills_job_dim.job_id
-LEFT JOIN skills_dim ON skills_job_dim.skill_id=skills_dim.skill_id
-ORDER BY salary_year_avg DESC; 
-
-<img width="1042" height="336" alt="image" src="https://github.com/user-attachments/assets/275a1e8b-f61e-4bf4-af1d-76d422e72b3f" />
-
+ 
+<img width="1046" height="767" alt="image" src="https://github.com/user-attachments/assets/913bf525-8637-4ea2-a86b-98107a478d77" />
 
 ### 3. Most In-Demand Skills
 Counted skill occurrences across relevant job postings to identify the technologies most frequently requested by employers.
 
-SELECT
-COUNT(skills_job_dim.skill_id) AS demand_count,
-skills
-FROM job_postings_fact
-
-INNER JOIN skills_job_dim ON job_postings_fact.job_id=skills_job_dim.job_id
-INNER JOIN skills_dim ON skills_job_dim.skill_id=skills_dim.skill_id
-
-WHERE
-job_title_short='Data Analyst'
-
-GROUP BY skills
-ORDER BY demand_count DESC
-LIMIT 10;
-
 <img width="296" height="292" alt="image" src="https://github.com/user-attachments/assets/1b16a9ae-8341-4ed9-9744-9b1ef66fdafb" />
-
 
 ### 4. Skills and Average Salary
 Compared average salaries across skills to explore the relationship between technical specialization and compensation.
 
-SELECT 
-ROUND(AVG(salary_year_avg),0) AS avg_salary,
-skills 
-FROM job_postings_fact
-
-INNER JOIN skills_job_dim ON job_postings_fact.job_id=skills_job_dim.job_id
-INNER JOIN skills_dim ON skills_job_dim.skill_id=skills_dim.skill_id
-
-WHERE
-job_title_short='Data Analyst'
-AND salary_year_avg IS NOT NULL
-GROUP BY skills
-ORDER BY avg_salary DESC;
-
 <img width="300" height="316" alt="image" src="https://github.com/user-attachments/assets/31390771-f066-403d-acf4-f461651aca6c" />
-
 
 ### 5. Skills Prioritization
 Combined skill demand and salary information to investigate which skills could be attractive priorities for aspiring Data Analysts.
-
-With top_demanded_skills AS ( 
-    SELECT skills_dim.skill_id,
-    skills_dim.skills,
-    COUNT(job_postings_fact.job_id) AS demand_count
-    FROM job_postings_fact
-    
-    INNER JOIN skills_job_dim ON job_postings_fact.job_id=skills_job_dim.job_id
-INNER JOIN skills_dim ON skills_job_dim.skill_id=skills_dim.skill_id
-
-WHERE  
-job_title_short='Data Analyst'
-AND salary_year_avg IS NOT NULL
-AND job_work_from_home=TRUE 
-
-GROUP BY skills_dim.skill_id)
-,
-top_avg_salaries AS( 
-    SELECT skills_dim.skill_id,
-    ROUND(AVG(salary_year_avg),0) AS avg_salary
-
-    FROM job_postings_fact
-    
-    INNER JOIN skills_job_dim ON job_postings_fact.job_id=skills_job_dim.job_id
-INNER JOIN skills_dim ON skills_job_dim.skill_id=skills_dim.skill_id
-
-WHERE  
-job_title_short='Data Analyst'
-AND salary_year_avg IS NOT NULL
-AND job_work_from_home=TRUE 
-
-GROUP BY skills_dim.skill_id
-)
-
-SELECT 
-top_demanded_skills.skill_id,
-top_demanded_skills.skills,
-top_demanded_skills.demand_count,
-avg_salary
-FROM top_demanded_skills
-
-INNER JOIN top_avg_salaries ON top_demanded_skills.skill_id=top_avg_salaries.skill_id
-WHERE demand_count>10
-ORDER BY demand_count DESC,avg_salary DESC;
 
 <img width="594" height="305" alt="image" src="https://github.com/user-attachments/assets/dd74e587-a3e7-45fb-9a92-4323cf0f0a6b" />
 
@@ -187,9 +62,51 @@ ORDER BY demand_count DESC,avg_salary DESC;
 
 ## Key Findings
 
-The analysis examines salary differences between roles, recurring technical skill requirements, and the relationship between skill demand and compensation.
+1. Highest-Paying Data Analyst Jobs
 
-Specific findings and supporting figures will be documented here after reviewing the query results.
+Identified high-paying remote Data Analyst opportunities, with annual salary estimates reaching $650,000 in the dataset.
+
+Mantys ranked first, followed by Meta at $336,500 and AT&T at $255,829.50.
+
+2. Skills Required for High-Paying Jobs
+
+Analyzed the skills associated with high-paying Data Analyst positions to identify technical requirements for well-compensated roles.
+
+The AT&T position, with an estimated annual salary of $255,829.50, lists a broad technical stack, including SQL, Python, R, Azure, Databricks, AWS, Pandas, PySpark, Jupyter, Excel, Tableau, Power BI, and PowerPoint.
+
+Other high-paying opportunities in the results include positions at Pinterest Job Advertisements ($232,423) and Uclahealthcareers ($217,000).
+
+These results highlight the combination of programming, cloud platforms, data processing, and visualization tools that may be relevant to high-paying Data Analyst roles.
+
+3. Most In-Demand Skills
+
+The most frequently requested skills for Data Analyst positions in the dataset were:SQL ranked first, followed by Excel and Python.
+
+Tableau and Power BI also appeared frequently, highlighting the importance of data visualization alongside querying and analysis.
+
+4. Skills and Average Salary
+
+Compared average annual salaries across skills to explore compensation differences.
+
+SVN ranked first in the displayed results at $400,000, followed by Solidity at $179,000 and Couchbase at $160,515.
+
+These results should be interpreted carefully: some skills may appear in relatively few job postings, and the displayed averages do not establish that a skill alone causes higher pay.
+
+5. Optimal Skills for Career Development
+
+Combined skill demand and average salary to identify potentially valuable skills for Data Analysts.
+
+SQL appeared in 398 job postings in the displayed results, with an average salary of $97,237.
+
+Python appeared in 236 postings, with an average salary of $101,397.
+
+Power BI appeared in 110 postings, with an average salary of $97,431.
+
+These findings suggest that SQL, Python, and Power BI are worth prioritizing when balancing employer demand with salary potential.
+
+Conclusion
+
+The analysis highlights SQL, Excel, Python, Tableau, and Power BI as frequently requested Data Analyst skills. Combining strong SQL fundamentals with Python and Power BI can help candidates develop a skill set aligned with many roles in the dataset. Salary comparisons should also account for job requirements, experience, and the number of observations behind each average.
 
 ## Project Structure
 

@@ -112,12 +112,12 @@ The analysis highlights SQL, Excel, Python, Tableau, and Power BI as frequently 
 
 ```text
 sql_load/
-├── 1_create_database.sql
+├── 1.create_database.sql
+├── 2.create_tables.sql
+├── 3.modify_tables.sql
 ├── 1_Top_paying_jobs.sql
 ├── 2_Top_paying_skills.sql
-├── 2_create_tables.sql
 ├── 3_Top_demanded_skills.sql
-├── 3_modify_tables.sql
 ├── 4_Top_paying_skills.sql
 └── 5_Most_optimal_skill.sql
 ```

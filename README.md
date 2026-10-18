@@ -28,8 +28,7 @@ The analysis addresses five key questions:
 ### 1. Highest-Paying Data Analyst Jobs
 Identified highly paid Data Analyst positions using salary filters and descending salary rankings to examine the opportunities available in the dataset.
 
-<img width="968" height="506" alt="image" src="https://github.com/user-attachments/assets/cb61620b-66b5-4e71-ac83-ec540f432449" />
-
+![Uploading Highest-Paying Remote Data Analyst Jobs.png…]()
 
 ### 2. Skills Required for High-Paying Roles
 Combined job posting and skills data to identify the technical skills associated with the highest-paying positions.
